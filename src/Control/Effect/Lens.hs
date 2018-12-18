@@ -74,6 +74,7 @@ assign l b = State.modify (Lens.set l b)
 -- This is a prefix version of ('%=').
 modifying :: forall s a b sig m . (Member (State s) sig, Carrier sig m, Monad m) => ASetter s s a b -> (a -> b) -> m ()
 modifying l f = State.modify (Lens.over l f)
+{-# INLINE modifying #-}
 
 -- | Map over the target of a 'Lens' or all of the targets of a
 -- 'Setter' or 'Traversal' in our monadic state.
@@ -81,3 +82,4 @@ modifying l f = State.modify (Lens.over l f)
 -- This is an infix version of 'modifying'.
 (%=) :: forall s a b sig m . (Member (State s) sig, Carrier sig m, Monad m) => ASetter s s a b -> (a -> b) -> m ()
 (%=) = modifying
+{-# INLINE (%=) #-}
