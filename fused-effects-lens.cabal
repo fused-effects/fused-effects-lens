@@ -11,7 +11,9 @@ copyright:           2018 Patrick Thomson
 category:            Web
 build-type:          Simple
 cabal-version:       >=1.10
-extra-source-files:  README.md
+extra-source-files:
+  README.md
+  CHANGES.md                 
 
 library
   hs-source-dirs:      src
@@ -20,7 +22,7 @@ library
   build-depends:       base >= 4.7 && < 5
                      , lens >= 4   && < 5
                      , fused-effects >= 0.1.2 && < 1
-  ghc-options:         -Wall                   
+  ghc-options:         -Wall
 
 test-suite test
   type:                exitcode-stdio-1.0
