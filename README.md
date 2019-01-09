@@ -5,7 +5,36 @@ This package provides an interface to the [lens](github.com/ekmett/lens) library
 This package is meant to be used alongside `lens`, like so:
 
 ``` haskell
-import Control.Lens.Getter hiding (view, use)
-import Control.Lens.Setter hiding (assign)
+import Control.Lens hiding (view, use, assign)
 import Control.Effect.Lens (view, use, assign)
 ```
+
+## Example
+
+Given a `Context` type that we will use in a `State` effect:
+
+``` haskell
+data Context = Context
+  { _amount :: Int
+  , _disabled :: Bool
+  } deriving (Eq, Show)
+  
+makeLenses ''Context
+```
+
+We can can use the `use` combinators to extract a lens target from the current state, and `assign` to write to a field of that state:
+
+``` haskell
+stateTest :: (Member (State Context) sig, Carrier sig m, Monad m) => m Int
+stateTest = do
+  initial <- use amount
+  assign amount (initial + 1)
+  assign disabled True
+  use amount
+```
+
+You can find a more complete example, including one that works with multiple `State` types, in the `test` directory.
+
+## License
+
+BSD3, like `fused-effects`.

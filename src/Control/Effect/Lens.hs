@@ -64,6 +64,7 @@ assign l b = State.modify (Lens.set l b)
 -- the old.
 --
 -- This is an infix version of 'assign'.
+infixr 4 .=
 (.=) :: forall s a b sig m . (Member (State s) sig, Carrier sig m, Monad m) => ASetter s s a b -> b -> m ()
 (.=) = assign
 {-# INLINE (.=) #-}
@@ -80,6 +81,7 @@ modifying l f = State.modify (Lens.over l f)
 -- 'Setter' or 'Traversal' in our monadic state.
 --
 -- This is an infix version of 'modifying'.
+infixr 4 %=
 (%=) :: forall s a b sig m . (Member (State s) sig, Carrier sig m, Monad m) => ASetter s s a b -> (a -> b) -> m ()
 (%=) = modifying
 {-# INLINE (%=) #-}
