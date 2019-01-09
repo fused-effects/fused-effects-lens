@@ -33,7 +33,7 @@ stateTest = do
   use amount
 ```
 
-You can find a more complete example, including one that works with multiple `State` types, in the `test` directory.
+You can find a more complete example, including one that works with multiple `State` constraints in a single computation, in the `test` directory.
 
 ## License
 
