@@ -28,8 +28,8 @@ We can can use the `use` combinators to extract a lens target from the current s
 stateTest :: (Member (State Context) sig, Carrier sig m, Monad m) => m Int
 stateTest = do
   initial <- use amount
-  assign amount (initial + 1)
-  assign disabled True
+  amount .= (initial + 1)
+  disabled .= True
   use amount
 ```
 
