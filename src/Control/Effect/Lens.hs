@@ -35,7 +35,7 @@ view l = Reader.asks (Lens.view l)
 -- context of the given monadic carrier.
 -- 
 -- This is slightly more general in lens itself, but should suffice for our purposes.
-views :: (Member (Reader s) sig, Carrier sig m, Functor m) => Getting a s a -> (a -> b) -> m b
+views :: forall s a b sig m . (Member (Reader s) sig, Carrier sig m, Functor m) => Getting a s a -> (a -> b) -> m b
 views l f = fmap f (Reader.asks (Lens.view l))
 {-# INLINE views #-}
 
@@ -51,7 +51,7 @@ use l = State.gets (Lens.view l)
 -- 'Control.Lens.Iso.Iso', or 'Control.Lens.Getter.Getter' in the
 -- current state, or use a summary of a 'Control.Lens.Fold.Fold' or
 -- 'Control.Lens.Traversal.Traversal' that points to a monoidal value.
-uses :: (Carrier sig f, Functor f, Member (State s) sig) => Getting a s a -> (a -> b) -> f b
+uses :: forall s a b f sig . (Carrier sig f, Functor f, Member (State s) sig) => Getting a s a -> (a -> b) -> f b
 uses l f = fmap f (State.gets (Lens.view l))
 {-# INLINE uses #-}
 
