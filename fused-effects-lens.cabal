@@ -2,7 +2,7 @@ name:                fused-effects-lens
 version:             0.1.0.0
 synopsis:            Monadic lens combinators for fused-effects.
 description:         Provides combinators for the lens-based manipulation of state and context types provided by the fused-effects library, similar to those provided for mtl-based monad transformers.
-homepage:            https://github.com/patrickt/fused-effects-lens#readme
+homepage:            https://github.com/fused-effects/fused-effects-lens#readme
 license:             BSD3
 license-file:        LICENSE
 author:              Patrick Thomson
