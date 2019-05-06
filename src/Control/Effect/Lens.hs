@@ -14,9 +14,9 @@ module Control.Effect.Lens
 import Control.Effect
 import qualified Control.Effect.State as State
 import qualified Control.Effect.Reader as Reader
-import qualified Control.Lens as Lens
-import Control.Lens.Getter (Getting)
-import Control.Lens.Setter (ASetter)
+import qualified Lens.Micro as Lens
+import qualified Lens.Micro.Extras as Lens
+import Lens.Micro.Type (Getting, ASetter)
 
 -- | View the value pointed to by a 'Control.Lens.Getter.Getter',
 -- 'Control.Lens.Iso.Iso' or 'Control.Lens.Lens.Lens' or the result of
@@ -33,7 +33,7 @@ view l = Reader.asks (Lens.view l)
 -- results of a 'Control.Lens.Fold.Fold' or
 -- 'Control.Lens.Traversal.Traversal' corresponding to the 'Reader'
 -- context of the given monadic carrier.
--- 
+--
 -- This is slightly more general in lens itself, but should suffice for our purposes.
 views :: forall s a b sig m . (Member (Reader s) sig, Carrier sig m, Functor m) => Getting a s a -> (a -> b) -> m b
 views l f = fmap f (Reader.asks (Lens.view l))

@@ -1,6 +1,7 @@
 # v0.2.0.0
 
-Add explicit `forall`s to `views` and `uses`.
+* Use `microlens` for lens primitives to enable use with other lens libraries.
+* Add explicit `forall`s to `views` and `uses`.
 
 # v0.1.0.0
 

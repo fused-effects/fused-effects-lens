@@ -1,6 +1,6 @@
 # fused-effects-lens
 
-This package provides an interface to the [`lens`](https://github.com/ekmett/lens) library that is compatible with [`fused-effects`](https://github.com/robrix/fused-effects). The standard formulation of `lens` combinators for operating in `MonadState` contexts—`use`, `.=`, et al—rely on `mtl` for `MonadState` and `MonadReader`, which is not applicable to `Reader` and `State` effects.
+This package provides an interface to the [`lens`](https://github.com/ekmett/lens) library (and other such libraries such as `microlens` and `generic-lens`) that is compatible with [`fused-effects`](https://github.com/robrix/fused-effects). The standard formulation of `lens` combinators for operating in `MonadState` contexts—`use`, `.=`, et al—rely on `mtl` for `MonadState` and `MonadReader`, which is not applicable to `Reader` and `State` effects.
 
 This package is meant to be used alongside `lens`, like so:
 
@@ -18,7 +18,7 @@ data Context = Context
   { _amount :: Int
   , _disabled :: Bool
   } deriving (Eq, Show)
-  
+
 makeLenses ''Context
 ```
 
