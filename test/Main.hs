@@ -2,9 +2,9 @@
 
 module Main where
 
-import Control.Effect
-import Control.Effect.Reader
-import Control.Effect.State
+import Control.Algebra
+import Control.Carrier.Reader
+import Control.Carrier.State.Strict
 import Control.Lens.Wrapped
 import Control.Lens.TH
 import Test.Hspec
@@ -21,7 +21,7 @@ initial = Context 0 False
 
 makeLenses ''Context
 
-stateTest :: (Member (State Context) sig, Carrier sig m, Monad m) => m Int
+stateTest :: (Has (State Context) sig m) => m Int
 stateTest = do
   initial <- use amount
   assign amount (initial + 1)
@@ -36,13 +36,13 @@ newtype Bar = Bar { _unBar :: Float } deriving (Eq, Show)
 
 makeWrapped ''Bar
 
-doubleStateTest :: (Member (State Bar) sig, Member (State Foo) sig, Carrier sig m, Monad m) => m Int
+doubleStateTest :: (Has (State Bar) sig m, Has (State Foo) sig m) => m Int
 doubleStateTest = do
   assign @Foo _Wrapped 5
   assign @Bar _Wrapped 30.5
   pure 50
 
-readerTest :: (Member (Reader Context) sig, Carrier sig m, Monad m) => m Int
+readerTest :: (Has (Reader Context) sig m) => m Int
 readerTest = succ <$> view amount
 
 spec :: Spec
