@@ -11,7 +11,7 @@ module Control.Effect.Lens
   , (%=)
   ) where
 
-import Control.Effect
+import Control.Algebra
 import qualified Control.Effect.State as State
 import qualified Control.Effect.Reader as Reader
 import qualified Lens.Micro as Lens
@@ -23,7 +23,7 @@ import Lens.Micro.Type (Getting, ASetter)
 -- folding over all the results of a 'Control.Lens.Fold.Fold' or
 -- 'Control.Lens.Traversal.Traversal' corresponding to the 'Reader'
 -- context of the given monadic carrier.
-view :: forall r a sig m . (Member (Reader r) sig, Carrier sig m, Functor m) => Getting a r a -> m a
+view :: forall r a sig m . (Has (Reader.Reader r) sig m) => Getting a r a -> m a
 view l = Reader.asks (Lens.view l)
 {-# INLINE view #-}
 
@@ -35,7 +35,7 @@ view l = Reader.asks (Lens.view l)
 -- context of the given monadic carrier.
 --
 -- This is slightly more general in lens itself, but should suffice for our purposes.
-views :: forall s a b sig m . (Member (Reader s) sig, Carrier sig m, Functor m) => Getting a s a -> (a -> b) -> m b
+views :: forall s a b sig m . (Has (Reader.Reader s) sig m) => Getting a s a -> (a -> b) -> m b
 views l f = fmap f (Reader.asks (Lens.view l))
 {-# INLINE views #-}
 
@@ -43,7 +43,7 @@ views l f = fmap f (Reader.asks (Lens.view l))
 -- 'Control.Lens.Iso.Iso', or 'Control.Lens.Getter.Getter' from the,
 -- or use a summary of a 'Control.Lens.Fold.Fold' or
 -- 'Control.Lens.Traversal.Traversal' that points to a monoidal value.
-use :: forall s a sig m . (Member (State s) sig, Carrier sig m, Monad m) => Getting a s a -> m a
+use :: forall s a sig m . (Has (State.State s) sig m) => Getting a s a -> m a
 use l = State.gets (Lens.view l)
 {-# INLINE use #-}
 
@@ -51,7 +51,7 @@ use l = State.gets (Lens.view l)
 -- 'Control.Lens.Iso.Iso', or 'Control.Lens.Getter.Getter' in the
 -- current state, or use a summary of a 'Control.Lens.Fold.Fold' or
 -- 'Control.Lens.Traversal.Traversal' that points to a monoidal value.
-uses :: forall s a b f sig . (Carrier sig f, Functor f, Member (State s) sig) => Getting a s a -> (a -> b) -> f b
+uses :: forall s a b f sig . (Has (State.State s) sig f) => Getting a s a -> (a -> b) -> f b
 uses l f = fmap f (State.gets (Lens.view l))
 {-# INLINE uses #-}
 
@@ -61,7 +61,7 @@ uses l f = fmap f (State.gets (Lens.view l))
 -- value, irrespective of the old.
 --
 -- This is a prefix version of '.='.
-assign :: forall s a b sig m . (Member (State s) sig, Carrier sig m, Monad m) => ASetter s s a b -> b -> m ()
+assign :: forall s a b sig m . (Has (State.State s) sig m) => ASetter s s a b -> b -> m ()
 assign l b = State.modify (Lens.set l b)
 {-# INLINE assign #-}
 
@@ -72,7 +72,7 @@ assign l b = State.modify (Lens.set l b)
 --
 -- This is an infix version of 'assign'.
 infixr 4 .=
-(.=) :: forall s a b sig m . (Member (State s) sig, Carrier sig m, Monad m) => ASetter s s a b -> b -> m ()
+(.=) :: forall s a b sig m . (Has (State.State s) sig m) => ASetter s s a b -> b -> m ()
 (.=) = assign
 {-# INLINE (.=) #-}
 
@@ -81,7 +81,7 @@ infixr 4 .=
 -- 'Control.Lens.Traversal.Traversal' in our monadic state.
 --
 -- This is a prefix version of '%='.
-modifying :: forall s a b sig m . (Member (State s) sig, Carrier sig m, Monad m) => ASetter s s a b -> (a -> b) -> m ()
+modifying :: forall s a b sig m . (Has (State.State s) sig m) => ASetter s s a b -> (a -> b) -> m ()
 modifying l f = State.modify (Lens.over l f)
 {-# INLINE modifying #-}
 
@@ -91,6 +91,6 @@ modifying l f = State.modify (Lens.over l f)
 --
 -- This is an infix version of 'modifying'.
 infixr 4 %=
-(%=) :: forall s a b sig m . (Member (State s) sig, Carrier sig m, Monad m) => ASetter s s a b -> (a -> b) -> m ()
+(%=) :: forall s a b sig m . (Has (State.State s) sig m) => ASetter s s a b -> (a -> b) -> m ()
 (%=) = modifying
 {-# INLINE (%=) #-}
