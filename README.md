@@ -25,7 +25,7 @@ makeLenses ''Context
 We can can use the `use` combinators to extract a lens target from the current state, and `assign` to write to a field of that state:
 
 ``` haskell
-stateTest :: (Member (State Context) sig, Carrier sig m, Monad m) => m Int
+stateTest :: (Has (State Context) sig m) => m Int
 stateTest = do
   initial <- use amount
   amount .= (initial + 1)
