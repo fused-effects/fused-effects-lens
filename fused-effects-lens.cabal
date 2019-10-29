@@ -34,3 +34,8 @@ test-suite test
                      , lens >=4   && < 5
                      , fused-effects >= 0.1.2 && < 1
                      , hspec >= 2.4.1
+
+source-repository head
+  type:     git
+  location: https://github.com/fused-effects/fused-effects-lens
+
