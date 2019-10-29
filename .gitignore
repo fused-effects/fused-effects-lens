@@ -1,3 +1,5 @@
 .stack-work
 .DS_Store
 dist-newstyle/
+dist/
+cabal.project.local
