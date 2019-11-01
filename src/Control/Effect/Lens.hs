@@ -1,5 +1,7 @@
 {-# LANGUAGE FlexibleContexts, RankNTypes #-}
-
+-- | Provides combinators for the lens-based manipulation of state and
+-- context types provided by the fused-effects library, similar to
+-- those provided for mtl-based monad transformers.
 module Control.Effect.Lens
   ( view
   , views
@@ -27,12 +29,10 @@ view :: forall r a sig m . (Has (Reader.Reader r) sig m) => Getting a r a -> m a
 view l = Reader.asks (Lens.view l)
 {-# INLINE view #-}
 
--- | View a function of the value pointed to by a
--- 'Control.Lens.Getter.Getter', 'Control.Lens.Iso.Iso' or
--- 'Control.Lens.Lens.Lens' or the result of folding over all the
--- results of a 'Control.Lens.Fold.Fold' or
--- 'Control.Lens.Traversal.Traversal' corresponding to the 'Reader'
--- context of the given monadic carrier.
+-- | View a function of the value pointed to by a getter or lens,
+-- or the result of folding over all the results of a fold or
+-- traversal, when applied to the 'Reader' context of the given
+-- monadic carrier.
 --
 -- This is slightly more general in lens itself, but should suffice for our purposes.
 views :: forall s a b sig m . (Has (Reader.Reader s) sig m) => Getting a s a -> (a -> b) -> m b
@@ -55,20 +55,18 @@ uses :: forall s a b f sig . (Has (State.State s) sig f) => Getting a s a -> (a 
 uses l f = fmap f (State.gets (Lens.view l))
 {-# INLINE uses #-}
 
--- | Replace the target of a 'Control.Lens.Lens.Lens' or all of the
--- targets of a 'Control.Lens.Setter.Setter' or
--- 'Control.Lens.Traversal.Traversal' in our monadic state with a new
--- value, irrespective of the old.
+-- | Replace the target of a lens (or all the targets of a setter
+-- or traversal) within the current monadic state, irrespective of
+-- the old value.
 --
 -- This is a prefix version of '.='.
 assign :: forall s a b sig m . (Has (State.State s) sig m) => ASetter s s a b -> b -> m ()
 assign l b = State.modify (Lens.set l b)
 {-# INLINE assign #-}
 
--- | Replace the target of a 'Control.Lens.Lens.Lens' or all of the
--- targets of a 'Control.Lens.Setter.Setter' or
--- 'Control.Lens.Traversal.Traversal' in our monadic state with a new
--- value, irrespective of the old.
+-- | Replace the target of a lens (or all the targets of a setter
+-- or traversal) within the current monadic state, irrespective of
+-- the old value.
 --
 -- This is an infix version of 'assign'.
 infixr 4 .=
@@ -76,18 +74,16 @@ infixr 4 .=
 (.=) = assign
 {-# INLINE (.=) #-}
 
--- | Map over the target of a 'Control.Lens.Lens.Lens' or all of the
--- targets of a 'Control.Lens.Setter.Setter' or
--- 'Control.Lens.Traversal.Traversal' in our monadic state.
+-- | Map over the target of a lens, or all of the targets of a setter
+-- or traversal, in the current monadic state.
 --
 -- This is a prefix version of '%='.
 modifying :: forall s a b sig m . (Has (State.State s) sig m) => ASetter s s a b -> (a -> b) -> m ()
 modifying l f = State.modify (Lens.over l f)
 {-# INLINE modifying #-}
 
--- | Map over the target of a 'Control.Lens.Lens.Lens' or all of the
--- targets of a 'Control.Lens.Setter.Setter' or
--- 'Control.Lens.Traversal.Traversal' in our monadic state.
+-- | Map over the target of a lens, or all of the targets of a setter
+-- or traversal, in the current monadic state.
 --
 -- This is an infix version of 'modifying'.
 infixr 4 %=
