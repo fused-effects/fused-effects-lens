@@ -1,25 +1,28 @@
-{-# LANGUAGE TypeApplications, FlexibleContexts, MultiParamTypeClasses, TemplateHaskell, TypeFamilies, FlexibleInstances #-}
+{-# LANGUAGE FlexibleContexts, FlexibleInstances, FunctionalDependencies, MultiParamTypeClasses, TypeApplications, TypeFamilies #-}
 
 module Main where
 
 import Control.Algebra
 import Control.Carrier.Reader
 import Control.Carrier.State.Strict
-import Control.Lens.Wrapped
-import Control.Lens.TH
+import Lens.Micro
 import Test.Hspec
 
 import Control.Effect.Lens
 
 data Context = Context
-  { _amount :: Int
+  { _amount     :: Int
   , _sweatshirt :: Bool
   } deriving (Eq, Show)
 
+amount :: Lens' Context Int
+amount = lens _amount (\c a -> c { _amount = a })
+
+sweatshirt :: Lens' Context Bool
+sweatshirt = lens _sweatshirt (\c s -> c { _sweatshirt = s })
+
 initial :: Context
 initial = Context 0 False
-
-makeLenses ''Context
 
 stateTest :: (Has (State Context) sig m) => m Int
 stateTest = do
@@ -28,18 +31,23 @@ stateTest = do
   assign sweatshirt True
   use amount
 
+class PolymorphicLens t a | t -> a where
+  wrapped :: Lens' t a
+
 newtype Foo = Foo { _unFoo :: Int } deriving (Eq, Show)
 
-makeWrapped ''Foo
+instance PolymorphicLens Foo Int where
+  wrapped = lens _unFoo (\_ i -> Foo i)
 
 newtype Bar = Bar { _unBar :: Float } deriving (Eq, Show)
 
-makeWrapped ''Bar
+instance PolymorphicLens Bar Float where
+  wrapped = lens _unBar (\_ i -> Bar i)
 
 doubleStateTest :: (Has (State Bar) sig m, Has (State Foo) sig m) => m Int
 doubleStateTest = do
-  assign @Foo _Wrapped 5
-  assign @Bar _Wrapped 30.5
+  assign @Foo wrapped 5
+  assign @Bar wrapped 30.5
   pure 50
 
 readerTest :: (Has (Reader Context) sig m) => m Int
