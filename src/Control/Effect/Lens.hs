@@ -3,7 +3,7 @@
 -- context types provided by the fused-effects library, similar to
 -- those provided for mtl-based monad transformers.
 module Control.Effect.Lens
-  ( view
+  ( Control.Effect.Lens.view
   , views
   , use
   , uses
@@ -13,76 +13,75 @@ module Control.Effect.Lens
   , (%=)
   ) where
 
-import Control.Effect
-import qualified Control.Effect.State as State
-import qualified Control.Effect.Reader as Reader
-import qualified Lens.Micro as Lens
-import qualified Lens.Micro.Extras as Lens
+import Control.Algebra
+import           Control.Effect.State as State
+import           Control.Effect.Reader as Reader
+import           Lens.Micro as Lens
+import           Lens.Micro.Extras as Lens
 import Lens.Micro.Type (Getting, ASetter)
 
--- | View the value pointed to by a getter or lens, or the result
--- of folding over all the results of a fold or traversal, when
--- applied to the 'Reader' context of the given monadic carrier.
-view :: forall r a sig m . (Member (Reader r) sig, Carrier sig m, Functor m) => Getting a r a -> m a
+-- | View the value pointed to by a @Getter@, 'Lens', 'Traversal', or
+-- @Fold@ corresponding to the 'Reader' context of the given monadic
+-- carrier.
+view :: forall r a sig m . (Has (Reader.Reader r) sig m) => Getting a r a -> m a
 view l = Reader.asks (Lens.view l)
 {-# INLINE view #-}
 
--- | View a function of the value pointed to by a getter or lens,
--- or the result of folding over all the results of a fold or
--- traversal, when applied to the 'Reader' context of the given
+-- | View a function of the value pointed to by a @Getter@ or 'Lens',
+-- or the result of folding over all the results of a @Fold@ or
+-- 'Traversal', when applied to the 'Reader' context of the given
 -- monadic carrier.
 --
--- This is slightly more general in @lens@ itself, but should suffice for our purposes.
-views :: forall s a b sig m . (Member (Reader s) sig, Carrier sig m, Functor m) => Getting a s a -> (a -> b) -> m b
+-- This is slightly more general in lens itself, but should suffice for our purposes.
+views :: forall s a b sig m . (Has (Reader.Reader s) sig m) => Getting a s a -> (a -> b) -> m b
 views l f = fmap f (Reader.asks (Lens.view l))
 {-# INLINE views #-}
 
--- | Extract the target of a lens or getter, or the result
--- of folding over all the results of a fold or traversal,
--- applied to the 'State' context of the the given monadic carrier.
-use :: forall s a sig m . (Member (State s) sig, Carrier sig m, Monad m) => Getting a s a -> m a
+-- | Extract the target of a 'Lens' or @Getter@, or use a summary of a
+-- @Fold@ or 'Traversal' that points to a monoidal value.
+use :: forall s a sig m . (Has (State.State s) sig m) => Getting a s a -> m a
 use l = State.gets (Lens.view l)
 {-# INLINE use #-}
 
--- | Extract a function of the target of a lens or getter, or the
--- result of folding over all the results of a fold or traversal,
--- applied to the 'State' context of the the given monadic carrier.
-uses :: forall s a b f sig . (Carrier sig f, Functor f, Member (State s) sig) => Getting a s a -> (a -> b) -> f b
+-- | Use a function of the target of a 'Lens' or @Getter@ in the
+-- current state, or use a summary of a @Fold@ or 'Traversal' that
+-- points to a monoidal value.
+uses :: forall s a b f sig . (Has (State.State s) sig f) => Getting a s a -> (a -> b) -> f b
 uses l f = fmap f (State.gets (Lens.view l))
 {-# INLINE uses #-}
 
--- | Replace the target of a lens (or all the targets of a setter
--- or traversal) within the current monadic state, irrespective of
+-- | Replace the target of a 'Lens' (or all the targets of a @Setter@
+-- or 'Traversal') within the current monadic state, irrespective of
 -- the old value.
 --
 -- This is a prefix version of '.='.
-assign :: forall s a b sig m . (Member (State s) sig, Carrier sig m, Monad m) => ASetter s s a b -> b -> m ()
+assign :: forall s a b sig m . (Has (State.State s) sig m) => ASetter s s a b -> b -> m ()
 assign l b = State.modify (Lens.set l b)
 {-# INLINE assign #-}
 
--- | Replace the target of a lens (or all the targets of a setter
--- or traversal) within the current monadic state, irrespective of
+-- | Replace the target of a 'Lens' (or all the targets of a @Setter@
+-- or 'Traversal') within the current monadic state, irrespective of
 -- the old value.
 --
 -- This is an infix version of 'assign'.
 infixr 4 .=
-(.=) :: forall s a b sig m . (Member (State s) sig, Carrier sig m, Monad m) => ASetter s s a b -> b -> m ()
+(.=) :: forall s a b sig m . (Has (State.State s) sig m) => ASetter s s a b -> b -> m ()
 (.=) = assign
 {-# INLINE (.=) #-}
 
--- | Map over the target of a lens, or all of the targets of a setter
--- or traversal, in the current monadic state.
+-- | Map over the target of a 'Lens', or all of the targets of a @Setter@
+-- or 'Traversal', in the current monadic state.
 --
 -- This is a prefix version of '%='.
-modifying :: forall s a b sig m . (Member (State s) sig, Carrier sig m, Monad m) => ASetter s s a b -> (a -> b) -> m ()
+modifying :: forall s a b sig m . (Has (State.State s) sig m) => ASetter s s a b -> (a -> b) -> m ()
 modifying l f = State.modify (Lens.over l f)
 {-# INLINE modifying #-}
 
--- | Map over the target of a lens, or all of the targets of a setter
--- or traversal, in the current monadic state.
+-- | Map over the target of a 'Lens', or all of the targets of a @Setter@
+-- or 'Traversal', in the current monadic state.
 --
 -- This is an infix version of 'modifying'.
 infixr 4 %=
-(%=) :: forall s a b sig m . (Member (State s) sig, Carrier sig m, Monad m) => ASetter s s a b -> (a -> b) -> m ()
+(%=) :: forall s a b sig m . (Has (State.State s) sig m) => ASetter s s a b -> (a -> b) -> m ()
 (%=) = modifying
 {-# INLINE (%=) #-}
