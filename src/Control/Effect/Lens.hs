@@ -14,11 +14,11 @@ module Control.Effect.Lens
   ) where
 
 import Control.Algebra
-import           Control.Effect.State as State
-import           Control.Effect.Reader as Reader
-import           Lens.Micro as Lens
-import           Lens.Micro.Extras as Lens
-import Lens.Micro.Type (Getting, ASetter)
+import Control.Effect.Reader as Reader
+import Control.Effect.State as State
+import Lens.Micro as Lens
+import Lens.Micro.Extras as Lens
+import Lens.Micro.Type (ASetter, Getting)
 
 -- | View the value pointed to by a @Getter@, 'Lens', 'Traversal', or
 -- @Fold@ corresponding to the 'Reader' context of the given monadic
