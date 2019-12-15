@@ -1,3 +1,8 @@
+# v1.1.0.0
+
+Introduce `+=`, `-=`, `*=`, and `//=`.
+Change fixity of `%=` to `infix` rather than `infixr`.
+
 # v1.0.0.0
 
 Upgrade to fused-effects v1.
