@@ -93,17 +93,20 @@ infix 4 %=, +=, -=, *=, //=
 -- | Modify the target(s) of a 'Lens', @Iso@, @Setter@ or 'Traversal' by adding a value.
 (+=) :: forall s a sig m . (Has (State.State s) sig m, Num a) => ASetter' s a -> a -> m ()
 l += v = State.modify (l +~ v)
+{-# INLINE (+=) #-}
 
 -- | Modify the target(s) of a 'Lens', @Iso@, @Setter@ or 'Traversal' by subtracting a value.
 (-=) :: forall s a sig m . (Has (State.State s) sig m, Num a) => ASetter' s a -> a -> m ()
 l -= v = State.modify (l -~ v)
+{-# INLINE (-=) #-}
 
 -- | Modify the target(s) of a 'Lens', @Iso@, @Setter@ or 'Traversal' by subtracting a value.
 (*=) :: forall s a sig m . (Has (State.State s) sig m, Num a) => ASetter' s a -> a -> m ()
 l *= v = modifying l (* v)
+{-# INLINE (*=) #-}
 
 -- | Modify the target(s) of a 'Lens', @Iso@, @Setter@ or 'Traversal' by dividing a value.
 (//=) :: forall s a sig m . (Has (State.State s) sig m, Fractional a) => ASetter' s a -> a -> m ()
 l //= v = modifying l (/ v)
-
+{-# INLINE (//=) #-}
 
