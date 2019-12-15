@@ -90,19 +90,19 @@ infixr 4 %=
 {-# INLINE (%=) #-}
 
 -- | Modify the target(s) of a 'Lens', @Iso@, @Setter@ or 'Traversal' by adding a value.
-(+=) :: (Has (State.State s) sig m, Num a) => ASetter' s a -> a -> m ()
+(+=) :: forall s a sig m . (Has (State.State s) sig m, Num a) => ASetter' s a -> a -> m ()
 l += v = State.modify (l +~ v)
 
 -- | Modify the target(s) of a 'Lens', @Iso@, @Setter@ or 'Traversal' by subtracting a value.
-(-=) :: (Has (State.State s) sig m, Num a) => ASetter' s a -> a -> m ()
+(-=) :: forall s a sig m . (Has (State.State s) sig m, Num a) => ASetter' s a -> a -> m ()
 l -= v = State.modify (l -~ v)
 
 -- | Modify the target(s) of a 'Lens', @Iso@, @Setter@ or 'Traversal' by subtracting a value.
-(*=) :: (Has (State.State s) sig m, Num a) => ASetter' s a -> a -> m ()
+(*=) :: forall s a sig m . (Has (State.State s) sig m, Num a) => ASetter' s a -> a -> m ()
 l *= v = modifying l (* v)
 
 -- | Modify the target(s) of a 'Lens', @Iso@, @Setter@ or 'Traversal' by dividing a value.
-(//=) :: (Has (State.State s) sig m, Fractional a) => ASetter' s a -> a -> m ()
+(//=) :: forall s a sig m . (Has (State.State s) sig m, Fractional a) => ASetter' s a -> a -> m ()
 l //= v = modifying l (/ v)
 
 
