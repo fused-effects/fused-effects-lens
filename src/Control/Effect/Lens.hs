@@ -80,11 +80,12 @@ modifying :: forall s a b sig m . (Has (State.State s) sig m) => ASetter s s a b
 modifying l f = State.modify (Lens.over l f)
 {-# INLINE modifying #-}
 
+infix 4 %=, +=, -=, *=, //=
+
 -- | Map over the target of a 'Lens', or all of the targets of a @Setter@
 -- or 'Traversal', in the current monadic state.
 --
 -- This is an infix version of 'modifying'.
-infixr 4 %=
 (%=) :: forall s a b sig m . (Has (State.State s) sig m) => ASetter s s a b -> (a -> b) -> m ()
 (%=) = modifying
 {-# INLINE (%=) #-}
