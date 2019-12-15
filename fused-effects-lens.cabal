@@ -1,7 +1,7 @@
 cabal-version:       2.4
 
 name:                fused-effects-lens
-version:             1.0.0.0
+version:             1.1.0.0
 synopsis:            Monadic lens combinators for fused-effects.
 description:         Provides combinators for the lens-based manipulation of state and context types provided by the fused-effects library, similar to those provided for mtl-based monad transformers.
 homepage:            https://github.com/fused-effects/fused-effects-lens#readme

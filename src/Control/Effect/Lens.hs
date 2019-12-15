@@ -11,6 +11,10 @@ module Control.Effect.Lens
   , (.=)
   , modifying
   , (%=)
+  , (+=)
+  , (-=)
+  , (*=)
+  , (//=)
   ) where
 
 import Control.Algebra
@@ -18,7 +22,6 @@ import Control.Effect.Reader as Reader
 import Control.Effect.State as State
 import Lens.Micro as Lens
 import Lens.Micro.Extras as Lens
-import Lens.Micro.Type (ASetter, Getting)
 
 -- | View the value pointed to by a @Getter@, 'Lens', 'Traversal', or
 -- @Fold@ corresponding to the 'Reader' context of the given monadic
@@ -77,11 +80,33 @@ modifying :: forall s a b sig m . (Has (State.State s) sig m) => ASetter s s a b
 modifying l f = State.modify (Lens.over l f)
 {-# INLINE modifying #-}
 
+infix 4 %=, +=, -=, *=, //=
+
 -- | Map over the target of a 'Lens', or all of the targets of a @Setter@
 -- or 'Traversal', in the current monadic state.
 --
 -- This is an infix version of 'modifying'.
-infixr 4 %=
 (%=) :: forall s a b sig m . (Has (State.State s) sig m) => ASetter s s a b -> (a -> b) -> m ()
 (%=) = modifying
 {-# INLINE (%=) #-}
+
+-- | Modify the target(s) of a 'Lens', @Iso@, @Setter@ or 'Traversal' by adding a value.
+(+=) :: forall s a sig m . (Has (State.State s) sig m, Num a) => ASetter' s a -> a -> m ()
+l += v = State.modify (l +~ v)
+{-# INLINE (+=) #-}
+
+-- | Modify the target(s) of a 'Lens', @Iso@, @Setter@ or 'Traversal' by subtracting a value.
+(-=) :: forall s a sig m . (Has (State.State s) sig m, Num a) => ASetter' s a -> a -> m ()
+l -= v = State.modify (l -~ v)
+{-# INLINE (-=) #-}
+
+-- | Modify the target(s) of a 'Lens', @Iso@, @Setter@ or 'Traversal' by subtracting a value.
+(*=) :: forall s a sig m . (Has (State.State s) sig m, Num a) => ASetter' s a -> a -> m ()
+l *= v = modifying l (* v)
+{-# INLINE (*=) #-}
+
+-- | Modify the target(s) of a 'Lens', @Iso@, @Setter@ or 'Traversal' by dividing a value.
+(//=) :: forall s a sig m . (Has (State.State s) sig m, Fractional a) => ASetter' s a -> a -> m ()
+l //= v = modifying l (/ v)
+{-# INLINE (//=) #-}
+
