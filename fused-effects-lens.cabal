@@ -9,8 +9,8 @@ license:             BSD-3-Clause
 license-file:        LICENSE
 author:              Patrick Thomson
 maintainer:          patrickt@github.com
-copyright:           2018 Patrick Thomson
-category:            Web
+copyright:           2018-2019 Patrick Thomson
+category:            Control
 build-type:          Simple
 extra-source-files:
   README.md

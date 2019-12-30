@@ -3,13 +3,16 @@
 -- context types provided by the fused-effects library, similar to
 -- those provided for mtl-based monad transformers.
 module Control.Effect.Lens
-  ( Control.Effect.Lens.view
+  ( -- * Reader accessors
+    Control.Effect.Lens.view
   , views
+    -- * State getters/setters
   , use
   , uses
   , assign
-  , (.=)
   , modifying
+    -- * Infix operators
+  , (.=)
   , (%=)
   , (+=)
   , (-=)
