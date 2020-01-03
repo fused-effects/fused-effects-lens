@@ -13,7 +13,10 @@ module Control.Effect.Lens
   , modifying
     -- * Infix operators
   , (.=)
+  , (?=)
   , (%=)
+  , (<~)
+    -- * Mathematical operators
   , (+=)
   , (-=)
   , (*=)
@@ -70,10 +73,17 @@ assign l b = State.modify (Lens.set l b)
 -- the old value.
 --
 -- This is an infix version of 'assign'.
-infixr 4 .=
+infixr 4 .=, ?=
 (.=) :: forall s a b sig m . (Has (State.State s) sig m) => ASetter s s a b -> b -> m ()
 (.=) = assign
 {-# INLINE (.=) #-}
+
+-- | Replace the target of a Lens or all of the targets of a Setter or
+-- Traversal in our monadic state with Just a new value, irrespective
+-- of the old.
+(?=) :: forall s a b sig m . (Has (State.State s) sig m) => ASetter s s a (Maybe b) -> b -> m ()
+setter ?= item = setter .= Just item
+{-# INLINE (?=) #-}
 
 -- | Map over the target of a 'Lens', or all of the targets of a @Setter@
 -- or 'Traversal', in the current monadic state.
@@ -84,6 +94,13 @@ modifying l f = State.modify (Lens.over l f)
 {-# INLINE modifying #-}
 
 infix 4 %=, +=, -=, *=, //=
+infixr 2 <~
+
+-- | Run a monadic action, and set all of the targets of a 'Lens', @Setter@
+-- or @Traversal to its result.
+(<~) :: forall s a b sig m . (Has (State s) sig m) => ASetter s s a b -> m b -> m ()
+setter <~ act = act >>= assign setter
+{-# INLINE (<~) #-}
 
 -- | Map over the target of a 'Lens', or all of the targets of a @Setter@
 -- or 'Traversal', in the current monadic state.
