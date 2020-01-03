@@ -1,3 +1,8 @@
+# v1.2.0.0
+
+Introduce `?=` and `<~`.
+Change fixity of `.=` to `infix 4`.
+
 # v1.1.0.0
 
 Introduce `+=`, `-=`, `*=`, and `//=`.
