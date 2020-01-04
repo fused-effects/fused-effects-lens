@@ -88,15 +88,15 @@ infixr 2 <~
 (.=) = assign
 {-# INLINE (.=) #-}
 
--- | Replace the target of a Lens or all of the targets of a Setter or
--- Traversal in our monadic state with Just a new value, irrespective
+-- | Replace the target of a Lens or all of the targets of a @Setter@ or
+-- 'Traversal' in our monadic state with Just a new value, irrespective
 -- of the old.
 (?=) :: forall s a b sig m . (Has (State.State s) sig m) => ASetter s s a (Maybe b) -> b -> m ()
 setter ?= item = setter .= Just item
 {-# INLINE (?=) #-}
 
 -- | Run a monadic action, and set all of the targets of a 'Lens', @Setter@
--- or @Traversal to its result.
+-- or 'Traversal' to its result.
 (<~) :: forall s a b sig m . (Has (State s) sig m) => ASetter s s a b -> m b -> m ()
 setter <~ act = act >>= assign setter
 {-# INLINE (<~) #-}
