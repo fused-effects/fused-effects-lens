@@ -11,6 +11,7 @@ module Control.Effect.Lens
   , uses
   , assign
   , modifying
+  , zoom
     -- * Infix operators
   , (.=)
   , (?=)
@@ -23,11 +24,12 @@ module Control.Effect.Lens
   , (//=)
   ) where
 
-import Control.Algebra
-import Control.Effect.Reader as Reader
-import Control.Effect.State as State
-import Lens.Micro as Lens
-import Lens.Micro.Extras as Lens
+import           Control.Algebra
+import qualified Control.Carrier.State.Strict as Strict
+import           Control.Effect.Reader as Reader
+import           Control.Effect.State as State
+import           Lens.Micro as Lens
+import           Lens.Micro.Extras as Lens
 
 -- | View the value pointed to by a @Getter@, 'Lens', 'Traversal', or
 -- @Fold@ corresponding to the 'Reader' context of the given monadic
@@ -75,6 +77,14 @@ assign l b = State.modify (Lens.set l b)
 modifying :: forall s a b sig m . (Has (State.State s) sig m) => ASetter s s a b -> (a -> b) -> m ()
 modifying l f = State.modify (Lens.over l f)
 {-# INLINE modifying #-}
+
+-- | Run a monadic action in a larger 'State' than it was defined in, using a
+-- 'Lens', and writes any resulting state changes back to the larger state.
+zoom :: Has (State s) sig m => Lens' s a -> Strict.StateC a m v -> m v
+zoom optic action = do
+  input  <- use optic
+  (s, a) <- Strict.runState input action
+  a      <$ (optic .= s)
 
 infix 4 .=, %=, ?=, +=, -=, *=, //=
 infixr 2 <~

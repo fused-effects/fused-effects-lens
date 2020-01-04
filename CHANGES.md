@@ -1,3 +1,5 @@
+Add `zoom` function, based on the implementation in `robrix/starlight`. (:tophat: to Rob.)
+
 # v1.2.0.0
 
 Introduce `?=` and `<~`.
