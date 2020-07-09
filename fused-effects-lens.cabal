@@ -39,4 +39,3 @@ test-suite test
 source-repository head
   type:     git
   location: https://github.com/fused-effects/fused-effects-lens
-
