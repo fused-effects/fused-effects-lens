@@ -1,3 +1,7 @@
+# v1.2.0.1
+
+Support `fused-effects` 1.1.
+
 # v1.2.0.0
 
 Introduce `?=` and `<~`.
