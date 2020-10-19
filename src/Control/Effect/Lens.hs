@@ -41,7 +41,8 @@ view l = Reader.asks (Lens.view l)
 -- 'Traversal', when applied to the 'Reader' context of the given
 -- monadic carrier.
 --
--- This is slightly more general in lens itself, but should suffice for our purposes.
+-- As with standard @view@ from @lens@, you can use this function in prefix
+-- form in a pure context, thanks to the 'Algebra' instance for @->@.
 views :: forall s a b sig m . (Has (Reader.Reader s) sig m) => Getting a s a -> (a -> b) -> m b
 views l f = fmap f (Reader.asks (Lens.view l))
 {-# INLINE views #-}
@@ -128,4 +129,3 @@ l *= v = modifying l (* v)
 (//=) :: forall s a sig m . (Has (State.State s) sig m, Fractional a) => ASetter' s a -> a -> m ()
 l //= v = modifying l (/ v)
 {-# INLINE (//=) #-}
-
